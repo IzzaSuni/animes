@@ -1,5 +1,5 @@
 import { useQuery } from "@apollo/client";
-import { getAnimeList, getTopTen } from "./queries";
+import { getAnimeDetail, getAnimeList, getTopTen } from "./queries";
 
 export const useGetAnimeList = (props: { search?: string; page: number }) => {
   if (!props.search) {
@@ -20,6 +20,15 @@ export const useGetTopTenAnime = () => {
       page: 1,
       perPage: 10,
       sort: "POPULARITY_DESC",
+    },
+    fetchPolicy: "no-cache",
+  });
+};
+
+export const useGetAnimeDetail = (id: number) => {
+  return useQuery(getAnimeDetail, {
+    variables: {
+      id,
     },
     fetchPolicy: "no-cache",
   });

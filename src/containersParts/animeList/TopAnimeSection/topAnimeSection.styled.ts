@@ -39,6 +39,21 @@ export const ArrowRight = styled(ArrowIcon)`
   }
 `;
 
+export const ArrowLeft = styled(ArrowIcon)`
+  scale: calc(14 / 24);
+
+  animation: slide-left 0.8s ease-out infinite alternate;
+
+  @keyframes slide-left {
+    from {
+      translate: 0px;
+    }
+    to {
+      translate: 4px;
+    }
+  }
+`;
+
 export const CarouselCard = styled.div``;
 
 export const AnimeCardContainer = styled(Box)({
@@ -59,12 +74,20 @@ export const Skeleton = styled(SkeletonComponent)`
   height: 300px;
 `;
 
-export const Image = styled.img`
-  height: 100%;
-  border-radius: 24px;
-  animation: fade-in 0.3s ease-in forwards;
+export const Image = styled.img<{
+  position?: string;
+  isRounded?: boolean;
+  withShadow?: boolean;
+}>`
+  height: ${({ height }) => height ?? "100%"};
+  position: ${({ position }) => position ?? "unset"};
+  border-radius: ${({ isRounded = true }) => (isRounded ? "24px" : "0")};
   object-fit: cover;
-  box-shadow: 0px 5px 10px 0px rgba(0, 0, 0, 0.2);
+  box-shadow: ${({ withShadow = true }) =>
+    withShadow ? " 0px 5px 10px 0px rgba(0, 0, 0, 0.2)" : "unset"};
+  cursor: pointer;
+  animation: fade-in 0.3s 1s ease-in forwards;
+  opacity: 0;
 
   @keyframes fade-in {
     from {

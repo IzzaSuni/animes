@@ -8,9 +8,15 @@ import DiscoverAnimeSection from "containersParts/animeList/DiscoverSection";
 function AnimeListComponent() {
   return (
     <Box>
-      <Box display={"flex"} justifyContent={"center"} my={2}>
+      <Box
+        bgcolor={"white"}
+        boxShadow={"0px 1px 10px 0px rgba(0,0,0,0.2)"}
+        display={"flex"}
+        justifyContent={"center"}
+        p={1}
+      >
         <Text isBold fontSize={16}>
-          Anime List App
+          Anime Info
         </Text>
       </Box>
       <TopAnimeSection />
