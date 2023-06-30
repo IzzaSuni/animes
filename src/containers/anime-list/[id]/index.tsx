@@ -7,6 +7,8 @@ import { useGetAnimeDetail } from "network/resolver";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { CoverImage } from "./animeDetail.styled";
 import { Text } from "components/Text";
+import { Characters, Episodes } from "./animedetail.types";
+import Carousel from "components/Carousel";
 
 export default function AnimeDetail() {
   const { id } = useParams();
@@ -15,6 +17,7 @@ export default function AnimeDetail() {
   const media = data?.Media;
   const genres = media?.genres;
   const episodes: [] = media?.streamingEpisodes;
+  const characters: Characters = media?.characters?.nodes;
 
   const navigate = useNavigate();
   const handleBack = () => {
@@ -25,7 +28,7 @@ export default function AnimeDetail() {
     <Box width={"100%"} height={"100vh"} padding={1}>
       <Box display={"flex"} onClick={handleBack}>
         <ArrowLeft />
-        <Text>Back</Text>
+        <Text isItalic>Back</Text>
       </Box>
       <Text align="center" isBold>
         Anime Detail
@@ -59,40 +62,44 @@ export default function AnimeDetail() {
             <Chip label={genre} />
           ))}
         </Box>
-        <Text align="justify" isBold fontSize={16}>
+        <Text align="justify" isItalic isBold fontSize={16}>
           Description
         </Text>
         <Text fontSize={14} align="justify">
           {media?.description}
         </Text>
         <Box mt={1}>
-          <Text>Streaming Episodes</Text>
+          <Text isItalic fontSize={16}>
+            Characters
+          </Text>
+          <Carousel>
+            {characters?.map(({ name: { full }, image: { large } }, index) => {
+              return (
+                <Box padding={1}>
+                  <Image src={large} />
+                  <Text align="center">{full}</Text>
+                </Box>
+              );
+            })}
+          </Carousel>
+        </Box>
+        <Box mt={1}>
+          <Text isItalic fontSize={16}>
+            Streaming Episodes
+          </Text>
           <Grid container>
-            {episodes?.map(
-              (
-                {
-                  url,
-                  thumbnail,
-                  title,
-                }: { url: string; thumbnail: string; title: string },
-                index
-              ) => {
-                return (
-                  <Grid item xs={4} padding={1}>
-                    <Box>
-                      <Link to={url}>
-                        <Image
-                          height={"100px"}
-                          width={"100%"}
-                          src={thumbnail}
-                        />
-                        <Text fontSize={12}>{title}</Text>
-                      </Link>
-                    </Box>
-                  </Grid>
-                );
-              }
-            )}
+            {episodes?.map(({ url, thumbnail, title }: Episodes, index) => {
+              return (
+                <Grid item xs={4} padding={1}>
+                  <Box>
+                    <Link to={url}>
+                      <Image height={"100px"} width={"100%"} src={thumbnail} />
+                      <Text fontSize={12}>{title}</Text>
+                    </Link>
+                  </Box>
+                </Grid>
+              );
+            })}
           </Grid>
         </Box>
       </Box>

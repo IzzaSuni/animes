@@ -5,6 +5,7 @@ import {
   SetStateAction,
   createContext,
   useContext,
+  useMemo,
   useState,
 } from "react";
 import { HandleGetSlider, SliderIndex } from "./animeListContext.types";
@@ -24,6 +25,7 @@ interface CtxValue {
   search: string;
   debouncedSearch: string;
   setSearch: Dispatch<SetStateAction<string>>;
+  lastPage: number;
 }
 
 const initialCtxValue = {
@@ -43,6 +45,7 @@ const initialCtxValue = {
   search: "",
   debouncedSearch: "",
   setSearch: () => {},
+  lastPage: 1,
 };
 
 const AnimeListContext = createContext<CtxValue>(initialCtxValue);
@@ -60,11 +63,20 @@ const AnimeListProvider = ({ children }: { children: ReactNode }) => {
 
   const { data: fethedDataTopTenAnime, loading: fetchingTopTenAnime } =
     useGetTopTenAnime();
-  const { data: fethedDataAnimeList, loading: fetchingAnimeList } =
-    useGetAnimeList({ page, search: debouncedSearch });
+  const {
+    data: fethedDataAnimeList,
+    loading: fetchingAnimeList,
+    previousData,
+  } = useGetAnimeList({ page, search: debouncedSearch });
 
   const defaultArray = [1, 2, 3, 4, 5];
   const dataAnimeList: [] = fethedDataAnimeList?.Page?.media ?? defaultArray;
+  const lastPageFethced = fethedDataAnimeList?.Page?.pageInfo.lastPage;
+  const lastPage = useMemo(
+    () => lastPageFethced ?? 500,
+    [lastPageFethced, previousData]
+  );
+
   const dataTopTenAnime: [] =
     fethedDataTopTenAnime?.Page?.media ?? defaultArray;
 
@@ -85,6 +97,7 @@ const AnimeListProvider = ({ children }: { children: ReactNode }) => {
     setSearch,
     dataAnimeList,
     fetchingAnimeList,
+    lastPage,
   };
 
   return (

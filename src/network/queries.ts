@@ -17,6 +17,7 @@ export const getAnimeList = gql`
         }
         coverImage {
           extraLarge
+          large
         }
       }
     }
@@ -49,7 +50,16 @@ export const getAnimeDetail = gql`
       averageScore
       episodes
       chapters
-
+      characters {
+        nodes {
+          name {
+            full
+          }
+          image {
+            large
+          }
+        }
+      }
       startDate {
         month
         year

@@ -80,6 +80,7 @@ export const Image = styled.img<{
   withShadow?: boolean;
 }>`
   height: ${({ height }) => height ?? "100%"};
+  width: ${({ width }) => width ?? "100%"};
   position: ${({ position }) => position ?? "unset"};
   border-radius: ${({ isRounded = true }) => (isRounded ? "24px" : "0")};
   object-fit: cover;
