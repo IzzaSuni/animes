@@ -8,7 +8,7 @@ export const useGetAnimeList = (props: { search?: string; page: number }) => {
 
   return useQuery(getAnimeList, {
     variables: {
-      perPage: 10,
+      perPage: 9,
       ...props,
     },
   });

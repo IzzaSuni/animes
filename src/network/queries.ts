@@ -10,7 +10,7 @@ export const getAnimeList = gql`
         hasNextPage
         perPage
       }
-      media(search: $search) {
+      media(search: $search, isAdult: false, type: ANIME) {
         title {
           romaji
         }
@@ -25,7 +25,7 @@ export const getAnimeList = gql`
 export const getTopTen = gql`
   query ($sort: [MediaSort]) {
     Page(page: 1, perPage: 10) {
-      media(sort: $sort) {
+      media(sort: $sort, isAdult: false, type: ANIME) {
         coverImage {
           extraLarge
         }

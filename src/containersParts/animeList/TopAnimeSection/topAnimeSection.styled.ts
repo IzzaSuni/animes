@@ -64,6 +64,7 @@ export const Image = styled.img`
   border-radius: 24px;
   animation: fade-in 0.3s ease-in forwards;
   object-fit: cover;
+  box-shadow: 0px 5px 10px 0px rgba(0, 0, 0, 0.2);
 
   @keyframes fade-in {
     from {

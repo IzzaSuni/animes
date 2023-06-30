@@ -9,6 +9,7 @@ import {
 } from "react";
 import { HandleGetSlider, SliderIndex } from "./animeListContext.types";
 import { useImmer } from "use-immer";
+import { useDebounce } from "usehooks-ts";
 
 interface CtxValue {
   dataTopTenAnime?: any[];
@@ -21,6 +22,7 @@ interface CtxValue {
   page: number;
   setPage: Dispatch<SetStateAction<number>>;
   search: string;
+  debouncedSearch: string;
   setSearch: Dispatch<SetStateAction<string>>;
 }
 
@@ -39,6 +41,7 @@ const initialCtxValue = {
   page: 1,
   setPage: () => {},
   search: "",
+  debouncedSearch: "",
   setSearch: () => {},
 };
 
@@ -46,6 +49,8 @@ const AnimeListContext = createContext<CtxValue>(initialCtxValue);
 
 const AnimeListProvider = ({ children }: { children: ReactNode }) => {
   const [search, setSearch] = useState("");
+  const debouncedSearch = useDebounce(search);
+
   const [page, setPage] = useState(1);
   const [sliderIndex, setSliderIndex] = useImmer({
     active: 1,
@@ -56,7 +61,7 @@ const AnimeListProvider = ({ children }: { children: ReactNode }) => {
   const { data: fethedDataTopTenAnime, loading: fetchingTopTenAnime } =
     useGetTopTenAnime();
   const { data: fethedDataAnimeList, loading: fetchingAnimeList } =
-    useGetAnimeList({ page, search });
+    useGetAnimeList({ page, search: debouncedSearch });
 
   const defaultArray = [1, 2, 3, 4, 5];
   const dataAnimeList: [] = fethedDataAnimeList?.Page?.media ?? defaultArray;
@@ -76,6 +81,7 @@ const AnimeListProvider = ({ children }: { children: ReactNode }) => {
     page,
     setPage,
     search,
+    debouncedSearch,
     setSearch,
     dataAnimeList,
     fetchingAnimeList,

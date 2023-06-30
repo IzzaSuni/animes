@@ -5,24 +5,30 @@ import { Box, Grid } from "@mui/material";
 import { Image, Skeleton } from "../TopAnimeSection/topAnimeSection.styled";
 
 export default function DiscoverAnimeSection() {
-  const { dataAnimeList, fetchingAnimeList } = useAnimeListProvider();
+  const { dataAnimeList, fetchingAnimeList, setSearch, debouncedSearch } =
+    useAnimeListProvider();
 
-  console.log(dataAnimeList);
+  const handleSearch = (text: string) => {
+    setSearch(text);
+  };
+
+  const hasData = dataAnimeList?.length! > 0 && fetchingAnimeList === false;
+
   return (
     <>
-      <Box padding="16px 32px">
-        <SearchBar />
-      </Box>
       <Box padding="0 8px">
         <Text isBold fontSize={18} color={"#6C6C6C"}>
-          Discover Anime
+          Discover more Anime
         </Text>
+      </Box>
+      <Box padding="16px 32px">
+        <SearchBar handleSearch={handleSearch} />
       </Box>
       <Box>
         <Grid container padding={"8px"} display={"flex"}>
           {dataAnimeList?.map((data, index) => {
             return (
-              <Grid item key={index} xs={6} padding={1}>
+              <Grid item key={index} xs={4} padding={1}>
                 <Box>
                   {fetchingAnimeList ? (
                     <Skeleton />
@@ -37,11 +43,18 @@ export default function DiscoverAnimeSection() {
                   )}
                 </Box>
 
-                <Text align="center">{data?.title?.romaji}</Text>
+                <Text fontSize={12} isBold align="center">
+                  {data?.title?.romaji}
+                </Text>
               </Grid>
             );
           })}
         </Grid>
+        {!hasData && (
+          <Text align="center">
+            Maaf tidak ada anime dengan key {debouncedSearch ?? "tersebut"}
+          </Text>
+        )}
       </Box>
     </>
   );
