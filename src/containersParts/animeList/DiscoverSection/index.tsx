@@ -28,7 +28,9 @@ export default function DiscoverAnimeSection() {
                     <Skeleton />
                   ) : (
                     <Image
+                      loading="lazy"
                       width={"100%"}
+                      placeholder={data?.title?.romaji}
                       alt={data?.title?.romaji}
                       src={data?.coverImage?.extraLarge}
                     />
