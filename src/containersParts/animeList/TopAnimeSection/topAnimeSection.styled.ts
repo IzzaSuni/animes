@@ -2,7 +2,8 @@ import styled from "@emotion/styled";
 import { Box, Skeleton as SkeletonComponent } from "@mui/material";
 import { ReactComponent as ArrowIcon } from "assets/icons/arrow/arrow-left.svg";
 
-export const CarouselWrapper = styled(Box)`
+export const CarouselWrapper = styled(Box)<{ isDesktop: boolean }>`
+  margin: ${({ isDesktop }) => (isDesktop ? "0px" : "0px -150px")};
   height: 300px;
 
   .slick-slider {

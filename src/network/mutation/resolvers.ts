@@ -1,5 +1,5 @@
 import { useMutation } from "@apollo/client";
-import { addAnimeToList, setCollection } from "./mutation";
+import { addAnimeToList, deleteCollections, setCollection } from "./mutation";
 
 export const useCreateCollections = () => {
   return useMutation(setCollection);
@@ -7,4 +7,8 @@ export const useCreateCollections = () => {
 
 export const useAddAnimeToCollections = () => {
   return useMutation(addAnimeToList);
+};
+
+export const useDeleteCustomList = () => {
+  return useMutation(deleteCollections);
 };

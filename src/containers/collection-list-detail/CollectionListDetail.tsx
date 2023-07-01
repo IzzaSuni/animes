@@ -1,3 +1,4 @@
+import { ArrowLeft } from "@mui/icons-material";
 import { Box, Button, Grid } from "@mui/material";
 import { Text } from "components/Text";
 import {
@@ -23,18 +24,21 @@ type DataProp = {
 function CollectionListDetail() {
   const { id } = useParams();
   const { data, loading: fetching, refetch } = useGetCollectionsMedia();
-  const [removeAnimeToCollection, { loading: loadingChip }] =
-    useAddAnimeToCollections();
+  const [removeAnimeToCollection] = useAddAnimeToCollections();
   const { isDesktop } = useBreakpoints();
   const navigate = useNavigate();
 
   const dataMedia = data?.MediaListCollection?.lists;
   const filteredList = dataMedia?.find((data: { name: string }) => {
-    return data?.name.toLowerCase() === id;
+    return data?.name.toLowerCase() === id?.toLowerCase();
   })?.entries;
 
   const handleNavigate = async (name: number) => {
     navigate(`/anime-detail/${name}`);
+  };
+
+  const handleBack = () => {
+    navigate("/");
   };
 
   const handleDelete = async (
@@ -60,6 +64,10 @@ function CollectionListDetail() {
   return (
     <Box>
       <Box p={2}>
+        <Box display={"flex"} onClick={handleBack}>
+          <ArrowLeft />
+          <Text isItalic>Back</Text>
+        </Box>
         <Text isItalic align="center">
           My Collections
         </Text>

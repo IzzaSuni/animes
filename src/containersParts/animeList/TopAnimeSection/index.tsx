@@ -30,6 +30,8 @@ export default function TopAnimeSection() {
     return navigate(`/anime-detail/${id}`);
   };
 
+  console.log(isDesktop);
+
   return (
     <>
       <Box padding="8px">
@@ -38,7 +40,7 @@ export default function TopAnimeSection() {
         </Text>
       </Box>
       <Box>
-        <CarouselWrapper>
+        <CarouselWrapper isDesktop={isDesktop}>
           <Carousel handleGetSliderIndex={handleGetSliderIndex}>
             {dataTopTenAnime?.map((e: any, index) => {
               if (fetchingDataTopTenAnimes) {

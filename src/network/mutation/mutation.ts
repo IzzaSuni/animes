@@ -21,3 +21,11 @@ export const addAnimeToList = gql`
     }
   }
 `;
+
+export const deleteCollections = gql`
+  mutation ($customList: String) {
+    DeleteCustomList(customList: $customList, type: ANIME) {
+      deleted
+    }
+  }
+`;

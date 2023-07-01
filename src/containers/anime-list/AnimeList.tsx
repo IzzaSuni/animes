@@ -4,8 +4,15 @@ import { Text } from "components/Text";
 import AnimeListProvider from "context/animeListContext";
 import TopAnimeSection from "containersParts/animeList/TopAnimeSection";
 import DiscoverAnimeSection from "containersParts/animeList/DiscoverSection";
+import { useNavigate } from "react-router-dom";
+import { ArrowRight } from "containersParts/animeList/TopAnimeSection/topAnimeSection.styled";
 
 function AnimeListComponent() {
+  const navigate = useNavigate();
+  const handleNavigate = () => {
+    navigate("/collections");
+  };
+
   return (
     <Box>
       <Box
@@ -19,6 +26,16 @@ function AnimeListComponent() {
         <Text isItalic fontSize={16}>
           Anime Info
         </Text>
+
+        <Box
+          onClick={handleNavigate}
+          position={"absolute"}
+          right={"8px"}
+          display={"flex"}
+        >
+          <Text fontSize={14}>My Collections</Text>
+          <ArrowRight />
+        </Box>
       </Box>
       <TopAnimeSection />
       <DiscoverAnimeSection />
