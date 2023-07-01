@@ -22,6 +22,7 @@ function AnimeListComponent() {
         display={"flex"}
         justifyContent={"center"}
         p={1}
+        position={"relative"}
       >
         <Text isItalic fontSize={16}>
           Anime Info
