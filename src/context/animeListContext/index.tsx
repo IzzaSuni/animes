@@ -3,7 +3,7 @@ import {
   useGetAnimeList,
   useGetCollections,
   useGetTopTenAnime,
-} from "network/queries/resolver";
+} from "network/query/resolver";
 import {
   Dispatch,
   ReactNode,
@@ -14,11 +14,11 @@ import {
   useState,
 } from "react";
 import { HandleGetSlider, SliderIndex } from "./animeListContext.types";
-import { useImmer } from "use-immer";
+import { Updater, useImmer } from "use-immer";
 import { useDebounce } from "usehooks-ts";
 import useBreakpoints from "hooks/breakpoints";
 import { useParams } from "react-router-dom";
-import { Drawer } from "@mui/material";
+import { Alert, Drawer, Snackbar } from "@mui/material";
 import MenuCollections from "containers/anime-list/[id]/collectionsMenu";
 
 interface CtxValue {
@@ -41,6 +41,7 @@ interface CtxValue {
   collectionsList: any;
   refetchAnimeDetail: () => void;
   refetchAnimeListCollections: () => void;
+  setSnackbar: Updater<{ open: boolean; message: string }>;
 }
 
 const initialCtxValue = {
@@ -71,6 +72,7 @@ const initialCtxValue = {
   collectionsList: [],
   refetchAnimeDetail: () => {},
   refetchAnimeListCollections: () => {},
+  setSnackbar: () => {},
 };
 
 const AnimeListContext = createContext<CtxValue>(initialCtxValue);
@@ -80,6 +82,10 @@ const AnimeListProvider = ({ children }: { children: ReactNode }) => {
   const debouncedSearch = useDebounce(search);
   const [openModal, setOpenModal] = useState(false);
   const [page, setPage] = useState(1);
+  const [snackbar, setSnackbar] = useImmer({
+    open: false,
+    message: "",
+  });
   const [sliderIndex, setSliderIndex] = useImmer({
     active: 1,
     left: 0,
@@ -126,6 +132,11 @@ const AnimeListProvider = ({ children }: { children: ReactNode }) => {
     setSliderIndex(sliderIndex);
   };
 
+  const handleCloseSnackbar = () =>
+    setSnackbar((prev) => {
+      prev.open = false;
+    });
+
   const animeListProviderValue = {
     dataTopTenAnime,
     fetchingDataTopTenAnime,
@@ -146,6 +157,7 @@ const AnimeListProvider = ({ children }: { children: ReactNode }) => {
     collectionsList,
     refetchAnimeDetail,
     refetchAnimeListCollections,
+    setSnackbar,
   };
 
   return (
@@ -165,6 +177,15 @@ const AnimeListProvider = ({ children }: { children: ReactNode }) => {
       >
         <MenuCollections />
       </Drawer>
+      <Snackbar
+        open={snackbar.open}
+        autoHideDuration={4000}
+        onClose={handleCloseSnackbar}
+      >
+        <Alert severity="info" sx={{ width: "100%" }}>
+          {snackbar.message}
+        </Alert>
+      </Snackbar>
     </AnimeListContext.Provider>
   );
 };

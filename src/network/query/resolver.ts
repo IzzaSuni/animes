@@ -3,6 +3,7 @@ import {
   getAnimeCollectionsList,
   getAnimeDetail,
   getAnimeList,
+  getMediaCollections,
   getTopTen,
 } from "./queries";
 
@@ -49,6 +50,14 @@ export const useGetAnimeDetail = (id: number) => {
 export const useGetCollections = () => {
   return useQuery(getAnimeCollectionsList, {
     fetchPolicy: "no-cache",
+    variables: {
+      userId: 6334973,
+    },
+  });
+};
+
+export const useGetCollectionsMedia = () => {
+  return useQuery(getMediaCollections, {
     variables: {
       userId: 6334973,
     },

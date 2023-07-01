@@ -11,3 +11,13 @@ export const setCollection = gql`
     }
   }
 `;
+
+export const addAnimeToList = gql`
+  mutation ($customLists: [String], $mediaId: Int) {
+    SaveMediaListEntry(customLists: $customLists, mediaId: $mediaId) {
+      id
+      userId
+      mediaId
+    }
+  }
+`;

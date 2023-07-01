@@ -92,3 +92,27 @@ export const getAnimeDetail = gql`
     }
   }
 `;
+
+export const getMediaCollections = gql`
+  query ($userId: Int) {
+    MediaListCollection(userId: $userId, type: ANIME) {
+      lists {
+        name
+        isCustomList
+        entries {
+          customLists(asArray: true)
+          media {
+            id
+            title {
+              romaji
+            }
+            coverImage {
+              extraLarge
+              large
+            }
+          }
+        }
+      }
+    }
+  }
+`;
