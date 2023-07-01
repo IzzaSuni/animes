@@ -23,6 +23,7 @@ export default function Carousel({
     slidesToScroll: 1,
     beforeChange: handleSliderIndex,
     swipeToSlide: true,
+
     centerMode: true,
     centerPadding: "60px",
     className: "center",

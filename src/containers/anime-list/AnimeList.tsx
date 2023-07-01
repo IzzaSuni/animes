@@ -10,12 +10,13 @@ function AnimeListComponent() {
     <Box>
       <Box
         bgcolor={"white"}
+        borderRadius={"0 0 32px 32px"}
         boxShadow={"0px 1px 10px 0px rgba(0,0,0,0.2)"}
         display={"flex"}
         justifyContent={"center"}
         p={1}
       >
-        <Text isBold fontSize={16}>
+        <Text isItalic fontSize={16}>
           Anime Info
         </Text>
       </Box>

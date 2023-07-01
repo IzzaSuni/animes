@@ -12,17 +12,20 @@ import Carousel from "components/Carousel";
 import { useAnimeListProvider } from "context/animeListContext";
 import { Text } from "components/Text";
 import { useNavigate } from "react-router-dom";
+import useBreakpoints from "hooks/breakpoints";
 
 export default function TopAnimeSection() {
   const { dataTopTenAnime, fetchingTopTenAnime, handleGetSliderIndex } =
     useAnimeListProvider();
   const navigate = useNavigate();
 
-  const handleSeeMore = () => {
-    navigate("/collections");
-  };
+  const { isDesktop } = useBreakpoints();
 
-  const handleNavigate = (id: number) => navigate(`/anime-detail/${id}`);
+  const handleNavigate = (id: number, isDouble: boolean = false) => {
+    if (isDesktop && !isDouble) return;
+
+    return navigate(`/anime-detail/${id}`);
+  };
 
   return (
     <>
@@ -53,6 +56,7 @@ export default function TopAnimeSection() {
                     display={"flex"}
                     height={"270px"}
                     onClick={() => handleNavigate(e?.id)}
+                    onDoubleClick={() => handleNavigate(e?.id, true)}
                   >
                     <Image
                       loading="lazy"

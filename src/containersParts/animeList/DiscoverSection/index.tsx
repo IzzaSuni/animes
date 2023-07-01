@@ -2,14 +2,15 @@ import SearchBar from "components/SearchBar";
 import { Text } from "components/Text";
 import { useAnimeListProvider } from "context/animeListContext";
 import { Box, Grid, Pagination, PaginationItem } from "@mui/material";
+import { useNavigate } from "react-router-dom";
+import { useGetCollections } from "network/resolver";
 import {
   ArrowLeft,
   ArrowRight,
   Image,
   Skeleton,
 } from "../TopAnimeSection/topAnimeSection.styled";
-import { useNavigate } from "react-router-dom";
-import { getAuthCode } from "network/httpRequest";
+import useBreakpoints from "hooks/breakpoints";
 
 export default function DiscoverAnimeSection() {
   const {
@@ -22,25 +23,25 @@ export default function DiscoverAnimeSection() {
     lastPage,
   } = useAnimeListProvider();
   const navigate = useNavigate();
+  const { isDesktop } = useBreakpoints();
 
   const handleSearch = (text: string) => {
     setSearch(text);
   };
 
-  const hasData = dataAnimeList?.length! > 0 && fetchingAnimeList === false;
+  // const { data } = useGetCollections(1);
 
+  const hasData = dataAnimeList?.length! > 0 && fetchingAnimeList === false;
   const handleNavigate = (id: number) => navigate(`/anime-detail/${id}`);
-  console.log(getAuthCode());
 
   return (
     <Box
       boxShadow={"0px 1px 10px 0px rgba(0,0,0,0.2)"}
       borderRadius={"24px 24px 0 0 "}
       bgcolor={"white"}
+      padding={1}
+      margin={1}
     >
-      <a href="https://anilist.co/api/v2/oauth/authorize?client_id=13317&redirect_uri=https:%2F%2Fanimes-delta.vercel.app%2F&response_type=code">
-        asu
-      </a>
       <Box padding="0 8px">
         <Text align="center" p={1} isBold fontSize={18} color={"#6C6C6C"}>
           Discover more Anime
@@ -50,10 +51,12 @@ export default function DiscoverAnimeSection() {
         <SearchBar handleSearch={handleSearch} />
       </Box>
 
-      <Box p={1} pb={4}>
+      <Box pb={4} justifyContent={"center"} display={"flex"}>
         <Pagination
           count={lastPage}
+          size={isDesktop ? "large" : "small"}
           page={page}
+          boundaryCount={1}
           onChange={(e, page) => setPage(page)}
           renderItem={(item) => (
             <PaginationItem
@@ -65,18 +68,20 @@ export default function DiscoverAnimeSection() {
       </Box>
 
       <Box>
-        <Grid container padding={"8px"} display={"flex"}>
+        <Grid
+          flex={1}
+          alignItems={"baseline"}
+          container
+          padding={1}
+          display={"flex"}
+        >
           {dataAnimeList?.map((data, index) => {
             return (
-              <Grid
-                position={"relative"}
-                maxHeight={"200px"}
-                item
-                key={index}
-                xs={4}
-                padding={1}
-              >
-                <Box onClick={() => handleNavigate(data?.id)}>
+              <Grid item key={index} xs={6} md={4} p={1}>
+                <Box
+                  position={"relative"}
+                  onClick={() => handleNavigate(data?.id)}
+                >
                   {fetchingAnimeList ? (
                     <Skeleton />
                   ) : (
@@ -84,16 +89,28 @@ export default function DiscoverAnimeSection() {
                       srcSet=""
                       loading="lazy"
                       width={"100%"}
+                      height={isDesktop ? "336px" : "230px"}
                       placeholder={data?.title?.romaji}
                       alt={data?.title?.romaji}
                       src={data?.coverImage?.large}
                     />
                   )}
+                  <Text
+                    position={"absolute"}
+                    bottom={0}
+                    width={"100%"}
+                    fontSize={12}
+                    isBold
+                    align="center"
+                    bgcolor={"rgba(0,0,0,0.6)"}
+                    color={"white"}
+                    isItalic
+                    padding={1}
+                    borderRadius={"0 0 24px 24px"}
+                  >
+                    {data?.title?.romaji}
+                  </Text>
                 </Box>
-
-                <Text fontSize={12} isBold align="center">
-                  {data?.title?.romaji}
-                </Text>
               </Grid>
             );
           })}

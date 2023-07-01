@@ -49,7 +49,6 @@ export const getAnimeDetail = gql`
       bannerImage
       averageScore
       episodes
-      chapters
       characters {
         nodes {
           name {
@@ -61,26 +60,42 @@ export const getAnimeDetail = gql`
         }
       }
       startDate {
-        month
         year
       }
       genres
       streamingEpisodes {
         url
-        site
         title
         thumbnail
-      }
-      externalLinks {
-        url
-        icon
       }
       coverImage {
         extraLarge
       }
       title {
         romaji
-        english
+      }
+    }
+  }
+`;
+
+export const getCollectionsList = gql`
+  query ($userId: Int) {
+    MediaListCollection(userId: $userId, type: ANIME) {
+      lists {
+        name
+        entries {
+          mediaId
+          media {
+            id
+            title {
+              romaji
+            }
+          }
+        }
+      }
+      user {
+        name
+        id
       }
     }
   }

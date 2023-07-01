@@ -5,18 +5,20 @@ import {
 } from "containersParts/animeList/TopAnimeSection/topAnimeSection.styled";
 import { useGetAnimeDetail } from "network/resolver";
 import { Link, useNavigate, useParams } from "react-router-dom";
-import { CoverImage } from "./animeDetail.styled";
 import { Text } from "components/Text";
 import { Characters, Episodes } from "./animedetail.types";
 import Carousel from "components/Carousel";
+import useBreakpoints from "hooks/breakpoints";
 
 export default function AnimeDetail() {
   const { id } = useParams();
   const { data } = useGetAnimeDetail(Number(id));
+  const { isDesktop } = useBreakpoints();
 
   const media = data?.Media;
   const genres = media?.genres;
   const episodes: [] = media?.streamingEpisodes;
+  const hasEpisode = episodes?.length > 0;
   const characters: Characters = media?.characters?.nodes;
 
   const navigate = useNavigate();
@@ -76,32 +78,38 @@ export default function AnimeDetail() {
             {characters?.map(({ name: { full }, image: { large } }, index) => {
               return (
                 <Box padding={1}>
-                  <Image src={large} />
+                  <Image height={isDesktop ? "160px" : "80px"} src={large} />
                   <Text align="center">{full}</Text>
                 </Box>
               );
             })}
           </Carousel>
         </Box>
-        <Box mt={1}>
-          <Text isItalic fontSize={16}>
-            Streaming Episodes
-          </Text>
-          <Grid container>
-            {episodes?.map(({ url, thumbnail, title }: Episodes, index) => {
-              return (
-                <Grid item xs={4} padding={1}>
-                  <Box>
-                    <Link to={url}>
-                      <Image height={"100px"} width={"100%"} src={thumbnail} />
-                      <Text fontSize={12}>{title}</Text>
-                    </Link>
-                  </Box>
-                </Grid>
-              );
-            })}
-          </Grid>
-        </Box>
+        {hasEpisode && (
+          <Box mt={1}>
+            <Text isItalic fontSize={16}>
+              Streaming Episodes
+            </Text>
+            <Grid container>
+              {episodes?.map(({ url, thumbnail, title }: Episodes, index) => {
+                return (
+                  <Grid item xs={4} padding={1}>
+                    <Box>
+                      <Link to={url}>
+                        <Image
+                          height={"100px"}
+                          width={"100%"}
+                          src={thumbnail}
+                        />
+                        <Text fontSize={12}>{title}</Text>
+                      </Link>
+                    </Box>
+                  </Grid>
+                );
+              })}
+            </Grid>
+          </Box>
+        )}
       </Box>
     </Box>
   );

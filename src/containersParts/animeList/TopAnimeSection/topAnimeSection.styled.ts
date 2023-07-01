@@ -4,7 +4,6 @@ import { ReactComponent as ArrowIcon } from "assets/icons/arrow/arrow-left.svg";
 import { Skeleton as SkeletonComponent } from "@mui/material";
 
 export const CarouselWrapper = styled(Box)`
-  margin: 0 -100px;
   height: 300px;
 
   .slick-slider {
