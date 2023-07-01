@@ -1,7 +1,6 @@
 import styled from "@emotion/styled";
-import { Box } from "@mui/material";
+import { Box, Skeleton as SkeletonComponent } from "@mui/material";
 import { ReactComponent as ArrowIcon } from "assets/icons/arrow/arrow-left.svg";
-import { Skeleton as SkeletonComponent } from "@mui/material";
 
 export const CarouselWrapper = styled(Box)`
   height: 300px;

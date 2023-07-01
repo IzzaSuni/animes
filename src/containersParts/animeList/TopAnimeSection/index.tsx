@@ -2,7 +2,6 @@ import { Box } from "@mui/material";
 import {
   AnimeCardContainer,
   AnimeTitleWrapper,
-  ArrowRight,
   CarouselCard,
   CarouselWrapper,
   Image,
@@ -15,14 +14,18 @@ import { useNavigate } from "react-router-dom";
 import useBreakpoints from "hooks/breakpoints";
 
 export default function TopAnimeSection() {
-  const { dataTopTenAnime, fetchingTopTenAnime, handleGetSliderIndex } =
-    useAnimeListProvider();
+  const {
+    dataTopTenAnime,
+    fetchingDataTopTenAnimes,
+    handleGetSliderIndex,
+    setOpenModal,
+  } = useAnimeListProvider();
   const navigate = useNavigate();
 
   const { isDesktop } = useBreakpoints();
 
   const handleNavigate = (id: number, isDouble: boolean = false) => {
-    if (isDesktop && !isDouble) return;
+    if (isDesktop && !isDouble) return setOpenModal(true);
 
     return navigate(`/anime-detail/${id}`);
   };
@@ -38,7 +41,7 @@ export default function TopAnimeSection() {
         <CarouselWrapper>
           <Carousel handleGetSliderIndex={handleGetSliderIndex}>
             {dataTopTenAnime?.map((e: any, index) => {
-              if (fetchingTopTenAnime) {
+              if (fetchingDataTopTenAnimes) {
                 return (
                   <Box key={index} height={"300px"}>
                     <Skeleton />

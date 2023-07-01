@@ -3,7 +3,6 @@ import { Text } from "components/Text";
 import { useAnimeListProvider } from "context/animeListContext";
 import { Box, Grid, Pagination, PaginationItem } from "@mui/material";
 import { useNavigate } from "react-router-dom";
-import { useGetCollections } from "network/resolver";
 import {
   ArrowLeft,
   ArrowRight,
@@ -22,14 +21,13 @@ export default function DiscoverAnimeSection() {
     setPage,
     lastPage,
   } = useAnimeListProvider();
+
   const navigate = useNavigate();
   const { isDesktop } = useBreakpoints();
 
   const handleSearch = (text: string) => {
     setSearch(text);
   };
-
-  // const { data } = useGetCollections(1);
 
   const hasData = dataAnimeList?.length! > 0 && fetchingAnimeList === false;
   const handleNavigate = (id: number) => navigate(`/anime-detail/${id}`);

@@ -24,6 +24,18 @@ export const getAnimeList = gql`
   }
 `;
 
+export const getAnimeCollectionsList = gql`
+  query ($userId: Int) {
+    User(id: $userId) {
+      mediaListOptions {
+        animeList {
+          customLists
+        }
+      }
+    }
+  }
+`;
+
 export const getTopTen = gql`
   query ($sort: [MediaSort]) {
     Page(page: 1, perPage: 10) {
@@ -49,6 +61,9 @@ export const getAnimeDetail = gql`
       bannerImage
       averageScore
       episodes
+      mediaListEntry {
+        customLists(asArray: true)
+      }
       characters {
         nodes {
           name {
@@ -73,29 +88,6 @@ export const getAnimeDetail = gql`
       }
       title {
         romaji
-      }
-    }
-  }
-`;
-
-export const getCollectionsList = gql`
-  query ($userId: Int) {
-    MediaListCollection(userId: $userId, type: ANIME) {
-      lists {
-        name
-        entries {
-          mediaId
-          media {
-            id
-            title {
-              romaji
-            }
-          }
-        }
-      }
-      user {
-        name
-        id
       }
     }
   }

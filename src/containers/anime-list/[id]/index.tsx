@@ -1,29 +1,34 @@
-import { Box, Chip, Grid } from "@mui/material";
+import { Box, Button, Chip, Grid } from "@mui/material";
 import {
   ArrowLeft,
   Image,
 } from "containersParts/animeList/TopAnimeSection/topAnimeSection.styled";
-import { useGetAnimeDetail } from "network/resolver";
-import { Link, useNavigate, useParams } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Text } from "components/Text";
-import { Characters, Episodes } from "./animedetail.types";
+import { Characters, Episodes } from "./animeDetail.types";
 import Carousel from "components/Carousel";
 import useBreakpoints from "hooks/breakpoints";
+import AnimeListProvider, {
+  useAnimeListProvider,
+} from "context/animeListContext";
 
-export default function AnimeDetail() {
-  const { id } = useParams();
-  const { data } = useGetAnimeDetail(Number(id));
+function AnimeDetailComponent() {
   const { isDesktop } = useBreakpoints();
+  const { setOpenModal } = useAnimeListProvider();
+  const { mediaAnimeDetail } = useAnimeListProvider();
 
-  const media = data?.Media;
-  const genres = media?.genres;
-  const episodes: [] = media?.streamingEpisodes;
+  const genres = mediaAnimeDetail?.genres;
+  const episodes: [] = mediaAnimeDetail?.streamingEpisodes;
   const hasEpisode = episodes?.length > 0;
-  const characters: Characters = media?.characters?.nodes;
+  const characters: Characters = mediaAnimeDetail?.characters?.nodes;
 
   const navigate = useNavigate();
   const handleBack = () => {
     navigate("/");
+  };
+
+  const handleOpenModal = () => {
+    setOpenModal(true);
   };
 
   return (
@@ -40,18 +45,19 @@ export default function AnimeDetail() {
         <Image
           withShadow={false}
           width={"100%"}
-          src={media?.bannerImage}
+          src={mediaAnimeDetail?.bannerImage}
           height={"300px"}
           isRounded
           loading="lazy"
         />
         <Text align="center" isItalic>
-          {media?.title?.romaji}
+          {mediaAnimeDetail?.title?.romaji}
         </Text>
 
         <Text align="center">
-          Episodes: {media?.episodes} | Score: {media?.averageScore} | Start
-          year: {media?.startDate?.year}
+          Episodes: {mediaAnimeDetail?.episodes} | Score:{" "}
+          {mediaAnimeDetail?.averageScore} | Start year:{" "}
+          {mediaAnimeDetail?.startDate?.year}
         </Text>
         <Box
           py={1}
@@ -61,14 +67,19 @@ export default function AnimeDetail() {
           justifyContent={"center"}
         >
           {genres?.map((genre: string) => (
-            <Chip label={genre} />
+            <Chip key={genre} label={genre} />
           ))}
+        </Box>
+        <Box p={2} display={"flex"} justifyContent={"center"}>
+          <Button onClick={handleOpenModal} variant="contained">
+            Add To Collections
+          </Button>
         </Box>
         <Text align="justify" isItalic isBold fontSize={16}>
           Description
         </Text>
         <Text fontSize={14} align="justify">
-          {media?.description}
+          {mediaAnimeDetail?.description}
         </Text>
         <Box mt={1}>
           <Text isItalic fontSize={16}>
@@ -77,7 +88,7 @@ export default function AnimeDetail() {
           <Carousel>
             {characters?.map(({ name: { full }, image: { large } }, index) => {
               return (
-                <Box padding={1}>
+                <Box key={full} padding={1}>
                   <Image height={isDesktop ? "160px" : "80px"} src={large} />
                   <Text align="center">{full}</Text>
                 </Box>
@@ -93,7 +104,7 @@ export default function AnimeDetail() {
             <Grid container>
               {episodes?.map(({ url, thumbnail, title }: Episodes, index) => {
                 return (
-                  <Grid item xs={4} padding={1}>
+                  <Grid key={title} item xs={4} padding={1}>
                     <Box>
                       <Link to={url}>
                         <Image
@@ -112,5 +123,13 @@ export default function AnimeDetail() {
         )}
       </Box>
     </Box>
+  );
+}
+
+export default function AnimeDetail() {
+  return (
+    <AnimeListProvider>
+      <AnimeDetailComponent />
+    </AnimeListProvider>
   );
 }

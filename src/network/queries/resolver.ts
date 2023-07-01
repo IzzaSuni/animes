@@ -1,12 +1,16 @@
-import { useMutation, useQuery } from "@apollo/client";
+import { useQuery } from "@apollo/client";
 import {
+  getAnimeCollectionsList,
   getAnimeDetail,
   getAnimeList,
-  getCollectionsList,
   getTopTen,
 } from "./queries";
 
-export const useGetAnimeList = (props: { search?: string; page: number }) => {
+export const useGetAnimeList = (props: {
+  search?: string;
+  page: number;
+  id: string | undefined;
+}) => {
   if (!props.search) {
     delete props?.search;
   }
@@ -16,10 +20,11 @@ export const useGetAnimeList = (props: { search?: string; page: number }) => {
       perPage: 9,
       ...props,
     },
+    skip: !!props?.id,
   });
 };
 
-export const useGetTopTenAnime = () => {
+export const useGetTopTenAnime = (id: string | undefined) => {
   return useQuery(getTopTen, {
     variables: {
       page: 1,
@@ -27,6 +32,7 @@ export const useGetTopTenAnime = () => {
       sort: "POPULARITY_DESC",
     },
     fetchPolicy: "no-cache",
+    skip: !!id,
   });
 };
 
@@ -36,18 +42,15 @@ export const useGetAnimeDetail = (id: number) => {
       id,
     },
     fetchPolicy: "no-cache",
+    skip: !id,
   });
 };
 
-export const useGetCollections = (id: number) => {
-  return useQuery(getCollectionsList, {
+export const useGetCollections = () => {
+  return useQuery(getAnimeCollectionsList, {
     fetchPolicy: "no-cache",
     variables: {
       userId: 6334973,
     },
   });
 };
-
-// export const useUpdateCollections = () => {
-//   return useMutation(get);
-// };

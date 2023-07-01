@@ -1,4 +1,9 @@
-import { useGetAnimeList, useGetTopTenAnime } from "network/resolver";
+import {
+  useGetAnimeDetail,
+  useGetAnimeList,
+  useGetCollections,
+  useGetTopTenAnime,
+} from "network/queries/resolver";
 import {
   Dispatch,
   ReactNode,
@@ -11,10 +16,14 @@ import {
 import { HandleGetSlider, SliderIndex } from "./animeListContext.types";
 import { useImmer } from "use-immer";
 import { useDebounce } from "usehooks-ts";
+import useBreakpoints from "hooks/breakpoints";
+import { useParams } from "react-router-dom";
+import { Drawer } from "@mui/material";
+import MenuCollections from "containers/anime-list/[id]/collectionsMenu";
 
 interface CtxValue {
   dataTopTenAnime?: any[];
-  fetchingTopTenAnime?: boolean;
+  fetchingDataTopTenAnimes?: boolean;
   dataAnimeList?: any[];
   fetchingAnimeList?: boolean;
   sliderIndex: SliderIndex;
@@ -26,11 +35,17 @@ interface CtxValue {
   debouncedSearch: string;
   setSearch: Dispatch<SetStateAction<string>>;
   lastPage: number;
+  openModal: boolean;
+  setOpenModal: Dispatch<SetStateAction<boolean>>;
+  mediaAnimeDetail: any;
+  collectionsList: any;
+  refetchAnimeDetail: () => void;
+  refetchAnimeListCollections: () => void;
 }
 
 const initialCtxValue = {
   dataTopTenAnime: [1, 2, 3, 4, 5],
-  fetchingTopTenAnime: false,
+  fetchingDataTopTenAnimes: false,
   dataAnimeList: [1, 2, 3, 4, 5],
   fetchingAnimeList: false,
   setSliderIndex: () => {},
@@ -46,6 +61,16 @@ const initialCtxValue = {
   debouncedSearch: "",
   setSearch: () => {},
   lastPage: 1,
+  openModal: false,
+  setOpenModal: () => {},
+  mediaAnimeDetail: {
+    genres: [],
+    streamingEpisodes: { episodes: [] },
+    characters: [],
+  },
+  collectionsList: [],
+  refetchAnimeDetail: () => {},
+  refetchAnimeListCollections: () => {},
 };
 
 const AnimeListContext = createContext<CtxValue>(initialCtxValue);
@@ -53,7 +78,7 @@ const AnimeListContext = createContext<CtxValue>(initialCtxValue);
 const AnimeListProvider = ({ children }: { children: ReactNode }) => {
   const [search, setSearch] = useState("");
   const debouncedSearch = useDebounce(search);
-
+  const [openModal, setOpenModal] = useState(false);
   const [page, setPage] = useState(1);
   const [sliderIndex, setSliderIndex] = useImmer({
     active: 1,
@@ -61,24 +86,41 @@ const AnimeListProvider = ({ children }: { children: ReactNode }) => {
     right: 2,
   });
 
-  const { data: fethedDataTopTenAnime, loading: fetchingTopTenAnime } =
-    useGetTopTenAnime();
+  const { id } = useParams();
+  const { isDesktop } = useBreakpoints();
+
   const {
     data: fethedDataAnimeList,
     loading: fetchingAnimeList,
     previousData,
-  } = useGetAnimeList({ page, search: debouncedSearch });
+  } = useGetAnimeList({ page, search: debouncedSearch, id });
+  const {
+    data: fetchedanimeCollectionList,
+    refetch: refetchAnimeListCollections,
+  } = useGetCollections();
+  const { data: fethedDataTopTenAnimes, loading: fetchingDataTopTenAnime } =
+    useGetTopTenAnime(id);
+  const { data: fetchedDataAnimeDetail, refetch: refetchAnimeDetail } =
+    useGetAnimeDetail(Number(id));
 
+  const mediaAnimeDetail = fetchedDataAnimeDetail?.Media;
   const defaultArray = [1, 2, 3, 4, 5];
   const dataAnimeList: [] = fethedDataAnimeList?.Page?.media ?? defaultArray;
   const lastPageFethced = fethedDataAnimeList?.Page?.pageInfo.lastPage;
+  const collectionsListFromUser =
+    fetchedanimeCollectionList?.User?.mediaListOptions?.animeList?.customLists;
+
+  const mediaListOptions =
+    fetchedDataAnimeDetail?.Media?.mediaListEntry?.customLists;
+  const collectionsList = mediaListOptions ?? collectionsListFromUser;
+
   const lastPage = useMemo(
-    () => lastPageFethced ?? 500,
+    () => lastPageFethced ?? 555,
     [lastPageFethced, previousData]
   );
 
   const dataTopTenAnime: [] =
-    fethedDataTopTenAnime?.Page?.media ?? defaultArray;
+    fethedDataTopTenAnimes?.Page?.media ?? defaultArray;
 
   const handleGetSliderIndex: HandleGetSlider = (sliderIndex) => {
     setSliderIndex(sliderIndex);
@@ -86,7 +128,7 @@ const AnimeListProvider = ({ children }: { children: ReactNode }) => {
 
   const animeListProviderValue = {
     dataTopTenAnime,
-    fetchingTopTenAnime,
+    fetchingDataTopTenAnime,
     sliderIndex,
     setSliderIndex,
     handleGetSliderIndex,
@@ -98,11 +140,31 @@ const AnimeListProvider = ({ children }: { children: ReactNode }) => {
     dataAnimeList,
     fetchingAnimeList,
     lastPage,
+    openModal,
+    setOpenModal,
+    mediaAnimeDetail,
+    collectionsList,
+    refetchAnimeDetail,
+    refetchAnimeListCollections,
   };
 
   return (
     <AnimeListContext.Provider value={animeListProviderValue}>
       {children}
+      <Drawer
+        anchor="bottom"
+        open={openModal}
+        PaperProps={{
+          style: {
+            borderRadius: "24px 24px 0 0",
+            width: isDesktop ? "768px" : "100%",
+            margin: "auto",
+          },
+        }}
+        onClose={() => setOpenModal(false)}
+      >
+        <MenuCollections />
+      </Drawer>
     </AnimeListContext.Provider>
   );
 };
