@@ -14,23 +14,15 @@ import { useNavigate } from "react-router-dom";
 import useBreakpoints from "hooks/breakpoints";
 
 export default function TopAnimeSection() {
-  const {
-    dataTopTenAnime,
-    fetchingDataTopTenAnimes,
-    handleGetSliderIndex,
-    setOpenModal,
-  } = useAnimeListProvider();
+  const { dataTopTenAnime, fetchingDataTopTenAnimes, handleGetSliderIndex } =
+    useAnimeListProvider();
   const navigate = useNavigate();
 
   const { isDesktop } = useBreakpoints();
 
   const handleNavigate = (id: number, isDouble: boolean = false) => {
-    if (isDesktop && !isDouble) return setOpenModal(true);
-
     return navigate(`/anime-detail/${id}`);
   };
-
-  console.log(isDesktop);
 
   return (
     <>
@@ -61,7 +53,6 @@ export default function TopAnimeSection() {
                     display={"flex"}
                     height={"270px"}
                     onClick={() => handleNavigate(e?.id)}
-                    onDoubleClick={() => handleNavigate(e?.id, true)}
                   >
                     <Image
                       loading="lazy"
