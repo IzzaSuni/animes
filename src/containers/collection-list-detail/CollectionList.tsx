@@ -47,7 +47,7 @@ function CollectionListDetail() {
       await removeAnimeToCollection({
         variables: {
           mediaId,
-          customLists: customLists.map((e) => e.name),
+          customLists: customLists?.map((e) => e.name),
         },
       });
 

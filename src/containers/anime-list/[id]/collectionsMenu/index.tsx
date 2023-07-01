@@ -23,7 +23,7 @@ export default function MenuCollections() {
     useAddAnimeToCollections();
   const navigate = useNavigate();
 
-  const prevList: [] = collectionsList.map((list: any) => {
+  const prevList: [] = collectionsList?.map((list: any) => {
     const isString = typeof list === "string";
     if (isString) return list;
     else return list?.name;
@@ -80,7 +80,13 @@ export default function MenuCollections() {
   const handleAddAnimeToCollections = async (colectionName: string) => {
     let customLists: [string?] = [];
 
+    console.log(collectionsList);
+
     collectionsList?.forEach((e: { enabled: boolean; name: string }) => {
+      if (typeof e === "string") {
+        customLists.push(colectionName);
+      }
+
       if (e.enabled) {
         if (e.name !== colectionName) customLists.push(e?.name);
       } else {
