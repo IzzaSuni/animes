@@ -5,12 +5,16 @@ import {
 } from "containersParts/animeList/TopAnimeSection/topAnimeSection.styled";
 import { Link, useNavigate } from "react-router-dom";
 import { Text } from "components/Text";
-import { Characters, Episodes } from "./animeDetail.types";
+
 import Carousel from "components/Carousel";
 import useBreakpoints from "hooks/breakpoints";
 import AnimeListProvider, {
   useAnimeListProvider,
 } from "context/animeListContext";
+
+export type Episodes = { url: string; thumbnail: string; title: string };
+
+export type Characters = [{ name: { full: string }; image: { large: string } }];
 
 function AnimeDetailComponent() {
   const { isDesktop } = useBreakpoints();
